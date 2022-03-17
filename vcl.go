@@ -5,9 +5,10 @@ import (
 	"github.com/hashicorp/vault/api"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"log"
+	"os"
 )
 
-var v = "2.0.0"
+var v = "2.0.1"
 
 func userpassLogin(user, pass string, client *api.Client) (string, error) {
 	// to pass the password
@@ -65,7 +66,12 @@ func main() {
 	}
 	if *key != "" {
 		b, _ := x.Data["data"].(map[string]interface{})
-		fmt.Printf("%s\n", b[*key])
+		if b[*key] == nil {
+			fmt.Printf("no key '%s' found\n", *key)
+			os.Exit(1)
+		} else {
+			fmt.Printf("%s\n", b[*key])
+		}
 	} else {
 		data, _ := x.Data["data"].(map[string]interface{})
 		for k, v := range data {
